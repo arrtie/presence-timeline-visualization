@@ -8,7 +8,7 @@
     "workspaceFolder": "/opt/presence-timeline-visualization",
   
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": ["npm i", "&&", "npx playwright install"],
+    "postCreateCommand": "npm i && npx playwright install --with-deps",
   
     // Configure tool-specific properties.
     "customizations": {
