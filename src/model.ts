@@ -1,4 +1,4 @@
-export type DataStatus = "loading" | "empty" | "complete";
+export type DataStatus = "loading" | "empty" | "success";
 
 export type PresenceInterval = [number, number];
 

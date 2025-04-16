@@ -38,7 +38,7 @@ test.describe('when there is a network error fetching the presence data', () => 
 test.describe('when the presence data is empty', () => {
   test.beforeEach(async ({page}) => {
     await page.route('*/**/api/presence', async route => {
-      const json = JSON.stringify([]);
+      const json = null;
       await route.fulfill({ json });
     });
   })
