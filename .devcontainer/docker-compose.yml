@@ -1,0 +1,14 @@
+# @format
+
+name: presence-timeline-visualization
+services:
+  astro:
+    command: ["/bin/bash"]
+    image: node:23-bookworm-slim
+    ports:
+      - 4321:4321
+    tty: true
+    volumes:
+      - type: bind
+        source: ../
+        target: /opt/presence-timeline-visualization
