@@ -1,13 +1,13 @@
 /** @format */
 
 import { styled } from "styled-components";
-import EmptyPresenceData from "../components/EmptyPresenceData";
+import EmptyPresenceData from "@components/EmptyPresenceData";
 import Loader from "@components/Loader";
 import TimelineView from "@features/timeline/TimelineView";
 import type { RawDataStatus, RawPresenceData } from "@src/model";
 import { PresenceManager } from "./PresenceManager";
 import { useEffect, useMemo, useState } from "react";
-import DateSelect from "../components/DateSelect";
+import DateSelect from "@components/DateSelect";
 
 const Container = styled.section`
   width: 100%;

@@ -62,7 +62,6 @@ export class PresenceManager {
         profilePresenceInterval,
       ]);
     });
-    console.log("uuidToIntervalMapL ", uuidToIntervalMap);
     return uuidToIntervalMap;
   }
 
@@ -88,10 +87,7 @@ export class PresenceManager {
   }
 
   getAllPresence() {
-    return Array.from(this.dayToPresenceMap.entries()).map((entry) => {
-      console.log("dayMapEntry: ", entry);
-      return entry;
-    });
+    return Array.from(this.dayToPresenceMap.entries());
   }
 }
 

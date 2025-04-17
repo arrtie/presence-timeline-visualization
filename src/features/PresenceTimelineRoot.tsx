@@ -15,7 +15,6 @@ export default function PresenceTimelineRoot() {
         if (jsonData == null) {
           setDataStatus("empty");
         } else {
-          console.log("jsonData: ", jsonData);
           setDataStatus("success");
           setData(jsonData);
         }
