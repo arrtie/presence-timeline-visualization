@@ -2,8 +2,7 @@
 
 import { test, expect, type Page, type Locator } from "@playwright/test";
 
-// TODO: test for the failure of GET /profiles
-// TODO: test for profile avatars
+// TODO: test for multiple profiles
 
 function getPresenceBubble(identifier: string) {
   return (page: Page) => page.getByLabel(identifier);
@@ -96,7 +95,7 @@ test.describe("when there is presence data", () => {
       });
     });
 
-    test.only("should find that profile's presence entries and exits in order down the Y axis", async ({
+    test("should find that profile's presence entries and exits in order down the Y axis", async ({
       page,
     }) => {
       await page.goto("/");
