@@ -1,14 +1,14 @@
-export type DataStatus = "loading" | "empty" | "success";
+export type RawDataStatus = "loading" | "empty" | "success";
 
 export type PresenceInterval = [number, number];
 
 export type PresenceStatus = "absent" | "present";
 
-export interface PresenceDataInstance {
+export interface RawPresenceDataInstance {
     presence_intervals: PresenceInterval[];
     current_status: PresenceStatus;
 };
 
-export interface PresenceData {
-    [key: number] : PresenceDataInstance;
+export interface RawPresenceData {
+    [key: number] : RawPresenceDataInstance;
 };
