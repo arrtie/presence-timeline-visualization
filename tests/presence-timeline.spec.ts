@@ -96,7 +96,7 @@ test.describe("when there is presence data", () => {
       });
     });
 
-    test.only("should find that profile's presence entries and exits in order down the Y axis", async ({
+    test("should find that profile's presence entries and exits in order down the Y axis", async ({
       page,
     }) => {
       await page.goto("/");
