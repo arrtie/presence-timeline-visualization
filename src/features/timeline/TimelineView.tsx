@@ -4,8 +4,11 @@ import type { ProfilePresenceInterval } from "@features/PresenceManager";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "styled-components";
 import TimelineColumn from "./TimelineColumn";
+import { HorizontalLines } from "./HorizontalLines";
 
-export const timelineColumnWidth = 60;
+// TODO: import these values from a common resource
+const timelineColumnWidth = 60;
+const timelinePadding = 50;
 
 interface Dimensions {
   width: number;
@@ -17,40 +20,27 @@ const Viz = styled.svg`
   background: white;
 `;
 
-const horizontalLineStrokeColor = "#f2f4f5";
-const HorizontalLine = styled.line`
-  stroke: ${horizontalLineStrokeColor};
-  stroke-width: 2px;
-`;
-
 interface TimelineVisualizationProps {
   profilePresenceMap: Map<string, ProfilePresenceInterval[]>;
   startTimestamp: number;
   endTimestamp: number;
 }
 
-function HorizontalLines({ count = 24 }: { count?: number }) {
-  return Array(count)
-    .fill(null)
-    .map((_, index) => {
-      const y = `${(100 * index) / count}%`;
-      return <HorizontalLine key={y} x1="0" x2="100%" y1={y} y2={y} />;
-    });
-}
-
-const padding = 50;
-
+// TODO: replace timestamp props with the difference between them
 export default function TimelineVisualization({
   profilePresenceMap,
   startTimestamp,
   endTimestamp,
 }: TimelineVisualizationProps) {
+   
   const vizRef = useRef<SVGSVGElement>(null);
 
-  const count = useMemo(() => {
+  // we generate a horizontal bar for each hour within our timespan
+  const horizontalRowCount = useMemo(() => {
     return Math.round((endTimestamp - startTimestamp) / (1000 * 60 * 60));
   }, [startTimestamp, endTimestamp]);
 
+  // TODO: Move to a hook
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
     height: 0,
@@ -61,8 +51,8 @@ export default function TimelineVisualization({
       if (vizRef.current) {
         const { width, height } = vizRef.current.getBoundingClientRect();
         setDimensions({
-          width: width - 2 * padding,
-          height: height - 2 * padding,
+          width: width - 2 * timelinePadding,
+          height: height - 2 * timelinePadding,
         });
       }
     };
@@ -77,12 +67,13 @@ export default function TimelineVisualization({
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
+  // function to convert a timestamp into Y coordinates
   const convertY = useMemo<(timestamp: number) => number>(
     () => (timestamp: number) => {
       const duration = endTimestamp - startTimestamp;
       const diffFromStart = timestamp - startTimestamp;
       const timeToHeightRatio = diffFromStart / duration;
-      return dimensions.height * timeToHeightRatio + padding;
+      return dimensions.height * timeToHeightRatio + timelinePadding;
     },
     [dimensions, startTimestamp, endTimestamp]
   );
@@ -91,12 +82,15 @@ export default function TimelineVisualization({
     <Viz ref={vizRef}>
       {dimensions == null ? null : (
         <>
-          <HorizontalLines count={count} />
+          <HorizontalLines count={horizontalRowCount} />
+          {/* iterate over each Profile's presence values to create that profile's column of figures   */}
           {Array.from(profilePresenceMap.entries()).map(
             ([uuid, data], index) => {
               return (
                 <TimelineColumn
                   key={uuid}
+                  // the X position of the columns content is the column width * the column index
+                  //  plus half the column width to center the elements
                   x={timelineColumnWidth * index + timelineColumnWidth / 2}
                   convertY={convertY}
                   intervals={data}

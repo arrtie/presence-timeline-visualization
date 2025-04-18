@@ -4,6 +4,8 @@ import type { Profile } from "@src/model";
 
 const profilesRoute = "/api/profiles";
 
+//TODO: replace console errors with error logging system
+
 export async function getProfiles() {
   try {
     const response = await fetch(profilesRoute);
