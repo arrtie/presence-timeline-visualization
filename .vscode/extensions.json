@@ -1,4 +1,11 @@
 {
-  "recommendations": ["astro-build.astro-vscode"],
+  "recommendations": [
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    "astro-build.astro-vscode",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-playwright.playwright"
+  ],
   "unwantedRecommendations": []
 }

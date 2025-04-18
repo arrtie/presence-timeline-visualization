@@ -86,3 +86,5 @@ To run Playwright tests the dev server must first be running.
 npm run dev
 npm run test
 ```
+
+Spec files are located within "test/"
