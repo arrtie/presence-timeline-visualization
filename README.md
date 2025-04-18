@@ -49,15 +49,40 @@ Ubiety thrives on open and honest communication. If anything comes up that could
 
 Good luck!
 
-## 🧞 Commands
+### Development
 
-All commands are run from the root of the project, from a terminal:
+> this project is setup to run within a [Devcontainer](https://code.visualstudio.com/docs/devcontainers/tutorial). You'll need to have Docker installed locally. This method is recommended otherwise you will need to install all the dependencies yourself
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI        
+```bash
+npm run setup
+```
+
+Within VS, install the [Devcontainers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) open the command palette and run
+
+```bash
+> Dev Containers: Reopen in Container
+```
+The first time you'll have to build from the dockerfile and it will take a few minutes but you should be able to simply start it again in the future.
+
+To start the development server outside of a Docker container:
+
+```bash
+npm run dev
+```
+
+Or run in debug mode within VSCode's side bar
+
+- click `Run and Debug`
+- from the dropdown select `Debug Session`
+- click the play button (green triangle)
+
+This will make the application available at <http://localhost:4321> and accessible on your local network.
+
+### Testing
+
+To run Playwright tests the dev server must first be running.
+
+```bash
+npm run dev
+npm run test
+```
