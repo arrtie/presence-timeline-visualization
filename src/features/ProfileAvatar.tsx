@@ -3,6 +3,7 @@
 import type { Profile } from "@src/model";
 import { styled } from "styled-components";
 
+// TODO: move constants to common palette
 const avatarWidth = 50;
 const avatarBorderColor = "#2e86de";
 const initialBackgroundColor = "slateblue";
@@ -45,6 +46,21 @@ const AvatarContent = styled.div`
   clip-path: circle(45%);
 `;
 
+/**
+ * A component that displays a user's avatar image or their initial letter
+ * in a circular frame if no image is available
+ * 
+ * @remarks
+ * The avatar will:
+ * - Show the profile photo if photo_url exists
+ * - Display the first letter of the user's name on a colored background if no photo
+ * - Maintain a consistent circular shape with a border
+ * - Include proper ARIA labels for accessibility
+ * 
+ * @param {Object} props - Component props
+ * @param {Profile} props.profile - User profile containing name and optional photo URL
+ * @returns {JSX.Element} A circular avatar component
+ */
 export default function ProfileAvatar({ profile }: { profile: Profile }) {
   return profile.photo_url == null ? (
     <Avatar aria-label={profile.name}>
