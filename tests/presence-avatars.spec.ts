@@ -101,7 +101,7 @@ test.describe("when there is profile data", () => {
         });
       });
 
-      test.only("should find that profile's avatar", async ({ page }) => {
+      test("should find that profile's avatar", async ({ page }) => {
         await page.goto("/");
         await expect(page.getByAltText(singleProfileWithAvatar.name)).toHaveAttribute(
           "src",
