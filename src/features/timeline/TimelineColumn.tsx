@@ -5,14 +5,15 @@ import { styled } from "styled-components";
 const fillColor = "#0768d1";
 const borderColor = "#84c3fb";
 const connectorStrokeColor = "#4d9dea";
+const bubbleRadius = 5;
 
-const Circle = styled.circle`
+const Bubble = styled.circle`
   stroke: ${borderColor};
   stroke-width: 2px;
   fill: ${fillColor};
 `;
 
-const Line = styled.line`
+const Connector = styled.line`
   stroke: ${connectorStrokeColor};
   stroke-width: 4px;
 `;
@@ -23,12 +24,21 @@ interface TimelineColumnProps {
   convertY: (y: number) => number;
 }
 
+/**
+ * Renders a vertical timeline column showing presence intervals with enter/exit bubbles
+ * connected by lines
+ * @param {Object} props - The component props
+ * @param {ProfilePresenceInterval[]} props.intervals - Array of presence intervals containing enter and exit timestamps
+ * @param {number} props.x - X-coordinate position for the column
+ * @param {function} props.convertY - Function to convert timestamps to Y-coordinate positions
+ * @returns {JSX.Element[]} Array of SVG groups containing connected bubble pairs for each interval
+ */
 export default function TimelineColumn({
   intervals,
   x,
   convertY,
 }: TimelineColumnProps) {
-  const radius = 5;
+
   return intervals.map((interval) => {
     const enterTimestamp = interval.enterTime;
     const exitTimestamp = interval.exitTime;
@@ -36,21 +46,21 @@ export default function TimelineColumn({
     const exitBubbleY = convertY(exitTimestamp);
     return (
       <g key={enterTimestamp}>
-        <Line
+        <Connector
           x1={x}
           x2={x}
-          y1={enterBubbleY + radius}
-          y2={exitBubbleY - radius}
+          y1={enterBubbleY + bubbleRadius}
+          y2={exitBubbleY - bubbleRadius}
         />
-        <Circle
-          r={radius}
+        <Bubble
+          r={bubbleRadius}
           cx={x}
           cy={enterBubbleY}
           aria-label={enterTimestamp.toString()}
           tabIndex={0}
         />
-        <Circle
-          r={radius}
+        <Bubble
+          r={bubbleRadius}
           cx={x}
           cy={exitBubbleY}
           aria-label={exitTimestamp.toString()}

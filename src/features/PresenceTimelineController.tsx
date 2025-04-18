@@ -24,13 +24,27 @@ interface PresenceTimelineProps {
   profiles: null | Profile[];
 }
 
+/**
+ * Main controller component for the presence timeline visualization
+ * Manages the state and data flow for displaying presence data across different dates
+ * 
+ * @param {Object} props - The component props
+ * @param {RawDataStatus} props.dataStatus - Current status of data loading ('loading' | 'empty' | 'ready')
+ * @param {RawPresenceData | null} props.presenceData - Raw presence data containing user timestamps
+ * @param {Profile[] | null} props.profiles - Array of user profile data
+ * @returns {JSX.Element} A container with date selection, profile filtering, and timeline visualization
+ */
 export default function PresenceTimelineController({
   dataStatus,
   presenceData,
   profiles,
 }: PresenceTimelineProps) {
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
-
+  
+  // create the presence manager from the raw presence data
+  // create the dateOptions from the presence intervals
+  // set the activeDate to the first available date
+  // memoized to avoid unnecessary re-processing
   const presence = useMemo(() => {
     if (presenceData == null) {
       return null;
@@ -44,10 +58,14 @@ export default function PresenceTimelineController({
     return { manager: presenceManager, dateOptions, activeDate };
   }, [presenceData]);
 
+  // if the presence data's activeDate changes, set the selected date
   useEffect(() => {
     setSelectedDate(presence?.activeDate);
   }, [presence?.activeDate]);
 
+  // Create active presence data from the selected date
+  // create the start and end timestamps for the selected date
+  // create an array of profiles that are present on the selected date
   const { activePresenceData, startTimestamp, endTimestamp, presentProfiles } =
     useMemo(() => {
       if (presence?.manager == null || selectedDate == null) {
@@ -73,7 +91,9 @@ export default function PresenceTimelineController({
         presentProfiles,
       };
     }, [presence, selectedDate]);
-
+    
+  // TODO: move the loading and error states up a level
+  // TODO: move the components to a common parent
   return (
     <Container>
       {(() => {

@@ -1,4 +1,5 @@
 /** @format */
+// Our source for TypeScript types to avoid circular dependencies
 
 export type RawDataStatus = "loading" | "empty" | "success";
 

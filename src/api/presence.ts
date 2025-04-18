@@ -4,6 +4,8 @@ import type { RawPresenceData } from "@src/model";
 
 const presenceRoute = "/api/presence";
 
+//TODO: replace console errors with error logging system
+ 
 export async function getPresence() {
   try {
     const response = await fetch(presenceRoute);
