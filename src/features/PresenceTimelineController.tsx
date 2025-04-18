@@ -4,10 +4,11 @@ import { styled } from "styled-components";
 import EmptyPresenceData from "@components/EmptyPresenceData";
 import Loader from "@components/Loader";
 import TimelineView from "@features/timeline/TimelineView";
-import type { RawDataStatus, RawPresenceData } from "@src/model";
+import type { Profile, RawDataStatus, RawPresenceData } from "@src/model";
 import { PresenceManager } from "./PresenceManager";
 import { useEffect, useMemo, useState } from "react";
 import DateSelect from "@components/DateSelect";
+import ProfilesController from "./ProfilesController";
 
 const Container = styled.section`
   width: 100%;
@@ -19,55 +20,59 @@ const Container = styled.section`
 
 interface PresenceTimelineProps {
   dataStatus: RawDataStatus;
-  data: null | RawPresenceData;
+  presenceData: null | RawPresenceData;
+  profiles: null | Profile[];
 }
 
 export default function PresenceTimelineController({
   dataStatus,
-  data,
+  presenceData,
+  profiles,
 }: PresenceTimelineProps) {
+  const [selectedDate, setSelectedDate] = useState<string | undefined>();
+
   const presence = useMemo(() => {
-    if (data == null) {
+    if (presenceData == null) {
       return null;
     }
-    const presenceManager = new PresenceManager(data);
+    const presenceManager = new PresenceManager(presenceData);
     const dateOptions = presenceManager.getAllPresenceDates();
     const activeDate = dateOptions.at(0);
     if (activeDate == null) {
       return null;
     }
     return { manager: presenceManager, dateOptions, activeDate };
-  }, [data]);
-
-  const [selectedDate, setSelectedDate] = useState<string | undefined>();
+  }, [presenceData]);
 
   useEffect(() => {
     setSelectedDate(presence?.activeDate);
   }, [presence?.activeDate]);
 
-  const { activePresenceData, startTimestamp, endTimestamp } = useMemo(() => {
-    if (presence?.manager == null || selectedDate == null) {
-      return {
-        activePresenceData: undefined,
-        startTimestamp: undefined,
-        endTimestamp: undefined,
-      };
-    }
-    const activePresenceData = presence.manager.getPresenceByDate(selectedDate);
+  const { activePresenceData, startTimestamp, endTimestamp, presentProfiles } =
+    useMemo(() => {
+      if (presence?.manager == null || selectedDate == null) {
+        return {};
+      }
+      const activePresenceData =
+        presence.manager.getPresenceByDate(selectedDate);
 
-    if (activePresenceData == null) {
+      if (activePresenceData == null) {
+        return {};
+      }
+
+      const uuidMap =
+        presence.manager.mapProfilePresenceIntervalsByUuid(activePresenceData);
+      const presentProfiles = Array.from(uuidMap.keys()) as string[];
+      const [startTimestamp, endTimestamp] =
+        presence.manager.getEarliestAndLatestTimestamp(activePresenceData);
+
       return {
-        activePresenceData: undefined,
-        startTimestamp: undefined,
-        endTimestamp: undefined,
+        activePresenceData: uuidMap,
+        startTimestamp,
+        endTimestamp,
+        presentProfiles,
       };
-    }
-    const uuidMap =
-      presence.manager.mapProfilePresenceIntervalsByUuid(activePresenceData);
-    const [startTimestamp, endTimestamp] =
-      presence.manager.getEarliestAndLatestTimestamp(activePresenceData);
-    return { activePresenceData: uuidMap, startTimestamp, endTimestamp };
-  }, [presence, selectedDate]);
+    }, [presence, selectedDate]);
 
   return (
     <Container>
@@ -90,7 +95,10 @@ export default function PresenceTimelineController({
               activeDate={selectedDate}
               onChange={setSelectedDate}
             />
-            <header>Avatars Here</header>
+            <ProfilesController
+              profiles={profiles ?? []}
+              presentProfileUuids={presentProfiles}
+            />
             <TimelineView
               profilePresenceMap={activePresenceData}
               startTimestamp={startTimestamp}
