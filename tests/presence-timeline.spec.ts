@@ -2,8 +2,7 @@
 
 import { test, expect, type Page, type Locator } from "@playwright/test";
 
-// TODO: test for the failure of GET /profiles
-// TODO: test for profile avatars
+// TODO: test for multiple profiles
 
 function getPresenceBubble(identifier: string) {
   return (page: Page) => page.getByLabel(identifier);

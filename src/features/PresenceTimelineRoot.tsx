@@ -1,33 +1,67 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PresenceTimelineController from "./PresenceTimelineController";
 import { getPresence } from "@src/api/presence";
-import type { RawDataStatus, RawPresenceData } from "@src/model";
+import { getProfiles } from "@src/api/profiles";
+import type { Profile, RawDataStatus, RawPresenceData } from "@src/model";
 
 export default function PresenceTimelineRoot() {
-  const [dataStatus, setDataStatus] = useState<RawDataStatus>("loading");
-  const [data, setData] = useState<RawPresenceData | null>(null);
+  const [presenceStatus, setPresenceStatus] = useState<RawDataStatus>("loading");
+  const [profileStatus, setProfileStatus] = useState<RawDataStatus>("loading");
+  const [presenceData, setPresenceData] = useState<RawPresenceData | null>(
+    null
+  );
+  const [profiles, setProfiles] = useState<Profile[] | null>(null);
 
   useEffect(() => {
     getPresence()
       .then((jsonData) => {
         if (jsonData == null) {
-          setDataStatus("empty");
+          setPresenceStatus("empty");
         } else {
-          setDataStatus("success");
-          setData(jsonData);
+          setPresenceStatus("success");
+          setPresenceData(jsonData);
         }
       })
       .catch((err) => {
         console.error(err);
-        setDataStatus("empty");
+        setPresenceStatus("empty");
       });
   }, []);
 
+  useEffect(() => {
+    getProfiles()
+      .then((jsonData) => {
+        if (jsonData == null) {
+          setProfileStatus("empty");
+        } else {
+          setProfileStatus("success");
+          setProfiles(jsonData);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  const dataStatus = useMemo<RawDataStatus>(() => {
+    if(presenceStatus === "empty" || profileStatus === "empty") {
+      return "empty";
+    }
+    if(presenceStatus === "success" && profileStatus === "success") {
+      return "success";
+    }
+    return "loading";
+  }, [presenceStatus, profileStatus])
+
   return (
     <>
-      <PresenceTimelineController dataStatus={dataStatus} data={data} />
+      <PresenceTimelineController
+        dataStatus={dataStatus}
+        presenceData={presenceData}
+        profiles={profiles}
+      />
     </>
   );
 }

@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "styled-components";
 import TimelineColumn from "./TimelineColumn";
 
+export const timelineColumnWidth = 60;
+
 interface Dimensions {
   width: number;
   height: number;
@@ -36,7 +38,7 @@ function HorizontalLines({ count = 24 }: { count?: number }) {
     });
 }
 
-const padding = 20;
+const padding = 50;
 
 export default function TimelineVisualization({
   profilePresenceMap,
@@ -95,7 +97,7 @@ export default function TimelineVisualization({
               return (
                 <TimelineColumn
                   key={uuid}
-                  x={50 * (index + 1)}
+                  x={timelineColumnWidth * index + timelineColumnWidth / 2}
                   convertY={convertY}
                   intervals={data}
                 />
